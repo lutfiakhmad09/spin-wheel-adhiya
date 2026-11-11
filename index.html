@@ -325,16 +325,10 @@ body::before{
         ctx.save();
         ctx.rotate(a0 + seg/2);
         ctx.fillStyle = c.fg; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
-        const maxW = r*0.64;
-        let fs = Math.min(56, Math.max(16, seg*r*0.55));
-        let text = items[i];
-        ctx.font = `700 ${fs}px Poppins`;
-        while (ctx.measureText(text).width > maxW && fs > 18){ fs -= 1; ctx.font = `700 ${fs}px Poppins`; }
-        if (ctx.measureText(text).width > maxW){
-          while (text.length > 1 && ctx.measureText(text+'…').width > maxW) text = text.slice(0,-1);
-          text += '…';
-        }
-        ctx.fillText(text, r - 36, 0);
+        const lay = layoutLabel(items[i], seg, r);
+        ctx.font = `700 ${lay.fs}px Poppins`;
+        const lh = lay.fs * 1.12, y0 = -(lay.lines.length - 1) * lh / 2;
+        lay.lines.forEach((ln, k) => ctx.fillText(ln, r - 36, y0 + k*lh));
         ctx.restore();
       }
       ctx.rotate(-angle);
@@ -353,6 +347,52 @@ body::before{
     }
     ctx.restore();
   }
+  /* fit a label into its slice: 1–3 lines, biggest font that fits */
+  const layoutCache = new Map();
+  function splitLines(words, n){
+    // best split of words into n lines minimizing the widest line
+    if (n === 1) return [[words.join(' ')]];
+    const out = [];
+    const rec = (start, left, acc) => {
+      if (left === 1){ out.push([...acc, words.slice(start).join(' ')]); return; }
+      for (let j = start + 1; j <= words.length - left + 1 - 0 && j < words.length; j++)
+        rec(j, left - 1, [...acc, words.slice(start, j).join(' ')]);
+    };
+    rec(0, n, []);
+    return out;
+  }
+  function layoutLabel(text, seg, r){
+    const key = text + '|' + seg.toFixed(5);
+    if (layoutCache.has(key)) return layoutCache.get(key);
+    const outer = r - 36, maxW = r * 0.66, sinH = Math.sin(Math.min(seg, Math.PI) / 2);
+    const words = text.split(/\s+/).filter(Boolean);
+    let best = null;
+    for (let n = 1; n <= Math.min(2, words.length); n++){
+      for (const lines of splitLines(words, n)){
+        for (let fs = 58; fs >= 16; fs -= 1){
+          ctx.font = `700 ${fs}px Poppins`;
+          const w = Math.max(...lines.map(l => ctx.measureText(l).width));
+          if (w > maxW) continue;
+          const inner = outer - w;                       // narrowest point of the text
+          const avail = 2 * Math.max(inner, r*0.2) * sinH * 0.86;
+          if (n * fs * 1.12 > avail) continue;
+          // prefer bigger font; small bonus for fewer lines
+          const score = fs - (n - 1) * 3;
+          if (!best || score > best.score) best = {fs, lines, score};
+          break;
+        }
+      }
+    }
+    if (!best){ // still too long: shrink + ellipsis on one line
+      ctx.font = '700 16px Poppins'; let t = text;
+      while (t.length > 1 && ctx.measureText(t + '…').width > maxW) t = t.slice(0, -1);
+      best = {fs: 16, lines: [t + (t === text ? '' : '…')]};
+    }
+    layoutCache.set(key, best);
+    return best;
+  }
+  if (document.fonts) document.fonts.ready.then(() => layoutCache.clear());
+
   setInterval(() => { bulbPhase = (bulbPhase+1)%2; if (!spinning) draw(); }, 600);
 
   /* ---------- sound ---------- */
