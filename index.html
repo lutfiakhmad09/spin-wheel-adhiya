@@ -378,20 +378,16 @@ body::before{
         if (im){
           // picture near the rim, upright when the slice sits under the pointer
           let ri = r * 0.8, s = 0;
-          for (let k = 0; k < 3; k++){ s = Math.min(r * 0.2, 2 * ri * Math.sin(Math.min(seg, Math.PI) / 2) * 0.7); ri = r - 30 - s / 2; }
+          for (let k = 0; k < 3; k++){ s = Math.min(r * 0.3, 2 * ri * Math.sin(Math.min(seg, Math.PI) / 2) * 0.85); ri = r - 26 - s / 2; }
           if (s >= 44){
+            // sticker-style: draw the picture itself (its own white outline) with a soft shadow
             ctx.save(); ctx.translate(ri, 0); ctx.rotate(Math.PI / 2);
-            const rad = s * 0.18;
-            ctx.beginPath(); ctx.roundRect(-s/2, -s/2, s, s, rad);
-            ctx.fillStyle = '#fff'; ctx.shadowColor = 'rgba(0,0,0,.35)'; ctx.shadowBlur = 12; ctx.fill(); ctx.shadowBlur = 0;
-            ctx.save(); ctx.clip();
-            const iw = im.naturalWidth, ih = im.naturalHeight, k2 = Math.min(s / iw, s / ih) * 0.94;
+            const iw = im.naturalWidth, ih = im.naturalHeight, k2 = Math.min(s / iw, s / ih);
+            ctx.shadowColor = 'rgba(0,0,0,.4)'; ctx.shadowBlur = 14; ctx.shadowOffsetY = 4;
             ctx.drawImage(im, -iw * k2 / 2, -ih * k2 / 2, iw * k2, ih * k2);
             ctx.restore();
-            ctx.lineWidth = 4; ctx.strokeStyle = '#d4a84b'; ctx.stroke();
-            ctx.restore();
             ctx.fillStyle = c.fg;
-            outer = ri - s / 2 - 10;
+            outer = ri - s / 2 - 6;
           }
         }
         const lay = layoutLabel(items[i], seg, r, outer);
