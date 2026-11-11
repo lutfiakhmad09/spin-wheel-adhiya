@@ -154,7 +154,7 @@ body::before{
 .card .btn{flex:0 1 auto;padding:1.4vh 3vh;font-size:min(2.2vh,1.3vw)}
 .card > img:last-child{height:5vh;margin-top:2.4vh}
 .card .prize-img{
-  display:block;width:min(24vh,14vw);aspect-ratio:1;object-fit:cover;margin:1.6vh auto .4vh;border-radius:2.4vh;background:#fff;
+  display:block;width:min(24vh,14vw);aspect-ratio:1;object-fit:contain;padding:1vh;margin:1.6vh auto .4vh;border-radius:2.4vh;background:#fff;
   box-shadow:0 0 0 .5vh var(--gold),0 1.2vh 3vh rgba(78,5,18,.35);
 }
 .card .prize-img[hidden]{display:none}
@@ -168,6 +168,8 @@ body::before{
 .imgrow .pick.has{border:2px solid var(--gold);color:transparent}
 .imgrow .pick:hover{border-color:var(--maroon)}
 .imgrow span{flex:1;min-width:0;font-size:13px;font-weight:600;overflow-wrap:anywhere}
+.imgrow .tag{flex:none;font-size:11px;color:#8a6a70;background:#f3e7d2;border-radius:6px;padding:3px 7px}
+.history li .th{object-fit:contain}
 .imgrow .del{flex:none;border:none;background:none;color:#a0646e;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;padding:4px 6px;border-radius:6px}
 .imgrow .del:hover{background:#fbeee8}
 #confetti{position:fixed;inset:0;pointer-events:none;z-index:55}
@@ -251,6 +253,7 @@ body::before{
     <button class="btn" id="btnShuffle">Acak urutan</button>
     <button class="btn" id="btnReset">Kosongkan</button>
   </div>
+  <button class="btn" id="btnBase">↺ Pakai daftar hadiah dari GitHub</button>
   <label class="check"><input type="checkbox" id="optRemove"> Hapus hadiah dari roda setelah keluar (hadiahnya cuma 1)</label>
   <label class="check"><input type="checkbox" id="optSound" checked> Suara putaran</label>
   <button class="btn primary" id="btnShare">Salin link berbagi (isi hadiah ikut)</button>
@@ -277,13 +280,17 @@ body::before{
 
 <script>
 (() => {
-  const KEY = 'adhiya-spin-hadiah-v2';
+  const KEY = 'adhiya-spin-hadiah-v3';
   const DEFAULT = {
     title: 'Spin Hadiah Adhiya',
     sub: 'Putar rodanya, raih hadiahnya!',
     items: ['Hadiah 1','Hadiah 2','Coba Lagi','Hadiah 3','Hadiah 4','Coba Lagi','Hadiah 5','Hadiah 6'],
-    remove: false, sound: true, history: [], images: {}
+    remove: false, sound: true, history: [], images: {},
+    custom: false   // true once this device edits the list (then the GitHub list no longer overrides it)
   };
+  // prize list + pictures published in the repo (config.json) — the same on every device
+  let base = null;
+  const imgOf = name => (state.images && state.images[name]) || (base && base.images && base.images[name]) || null;
   const $ = id => document.getElementById(id);
   const canvas = $('wheel'), ctx = canvas.getContext('2d');
   const W = canvas.width, R = W / 2;
@@ -301,6 +308,7 @@ body::before{
         if (Array.isArray(shared.i)) s.items = shared.i.map(String);
         if (shared.t != null) s.title = String(shared.t);
         if (shared.s != null) s.sub = String(shared.s);
+        s.custom = true;
         window.history.replaceState(null, '', location.pathname + location.search);
       }
     } catch(e) {}
@@ -308,6 +316,21 @@ body::before{
   }
   function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); return true; } catch(e) { return false; } }
   const persist = save;
+  function applyBase(){
+    if (!base) return;
+    if (base.title != null) state.title = String(base.title);
+    if (base.sub != null) state.sub = String(base.sub);
+    if (Array.isArray(base.items)) state.items = base.items.map(String);
+  }
+  async function loadBase(){
+    try {
+      const r = await fetch('config.json', {cache: 'no-store'});
+      if (!r.ok) return;
+      base = await r.json();
+      if (!state.custom) applyBase();
+      syncInputs(); renderHistory(); draw();
+    } catch(e) {}
+  }
 
   /* ---------- colors ---------- */
   const PALETTE = [
@@ -362,7 +385,7 @@ body::before{
             ctx.beginPath(); ctx.roundRect(-s/2, -s/2, s, s, rad);
             ctx.fillStyle = '#fff'; ctx.shadowColor = 'rgba(0,0,0,.35)'; ctx.shadowBlur = 12; ctx.fill(); ctx.shadowBlur = 0;
             ctx.save(); ctx.clip();
-            const iw = im.naturalWidth, ih = im.naturalHeight, k2 = Math.max(s / iw, s / ih);
+            const iw = im.naturalWidth, ih = im.naturalHeight, k2 = Math.min(s / iw, s / ih) * 0.94;
             ctx.drawImage(im, -iw * k2 / 2, -ih * k2 / 2, iw * k2, ih * k2);
             ctx.restore();
             ctx.lineWidth = 4; ctx.strokeStyle = '#d4a84b'; ctx.stroke();
@@ -499,7 +522,7 @@ body::before{
     lastWinnerIdx = i;
     const name = state.items[i];
     $('winName').textContent = name;
-    const src = state.images[name];
+    const src = imgOf(name);
     if (src){ $('winImg').src = src; $('winImg').hidden = false; } else { $('winImg').hidden = true; $('winImg').removeAttribute('src'); }
     state.history.unshift({name, at: Date.now()});
     save(); renderHistory();
@@ -510,7 +533,7 @@ body::before{
   function closeModal(removeIt){
     $('modal').classList.remove('show');
     if ((state.remove || removeIt) && lastWinnerIdx >= 0 && state.items[lastWinnerIdx] === $('winName').textContent){
-      state.items.splice(lastWinnerIdx,1); lastWinnerIdx = -1;
+      state.items.splice(lastWinnerIdx,1); lastWinnerIdx = -1; state.custom = true;
       syncInputs(); save(); draw();
     }
   }
@@ -547,7 +570,7 @@ body::before{
   /* ---------- prize pictures (stored per prize name) ---------- */
   const imgCache = new Map();
   function getImg(name){
-    const src = state.images[name];
+    const src = imgOf(name);
     if (!src) return null;
     let im = imgCache.get(src);
     if (!im){ im = new Image(); im.onload = () => { if (!spinning) draw(); }; im.src = src; imgCache.set(src, im); }
@@ -561,12 +584,14 @@ body::before{
     names.forEach(name => {
       const row = document.createElement('div'); row.className = 'imgrow';
       const b = document.createElement('button'); b.className = 'pick'; b.type = 'button'; b.title = 'Pilih gambar';
-      const src = state.images[name];
-      if (src){ b.classList.add('has'); b.style.backgroundImage = `url("${src}")`; b.textContent = '+'; } else b.textContent = '+';
+      const own = state.images[name], src = imgOf(name);
+      if (src){ b.classList.add('has'); b.style.backgroundImage = `url("${src}")`; b.style.backgroundSize = 'contain'; }
+      b.textContent = '+';
       b.onclick = () => { pickFor = name; $('filePick').value = ''; $('filePick').click(); };
       const sp = document.createElement('span'); sp.textContent = name;
       row.append(b, sp);
-      if (src){
+      if (src && !own){ const tag = document.createElement('small'); tag.className = 'tag'; tag.textContent = 'dari GitHub'; row.append(tag); }
+      if (own){
         const d = document.createElement('button'); d.className = 'del'; d.type = 'button'; d.textContent = 'Hapus gambar';
         d.onclick = () => { delete state.images[name]; persist(); renderImgList(); renderHistory(); draw(); };
         row.append(d);
@@ -579,7 +604,7 @@ body::before{
       const url = URL.createObjectURL(file), im = new Image();
       im.onload = () => {
         const S = 320, c = document.createElement('canvas'); c.width = c.height = S;
-        const g = c.getContext('2d'), k = Math.max(S / im.width, S / im.height);
+        const g = c.getContext('2d'), k = Math.min(S / im.width, S / im.height);
         g.fillStyle = '#fff'; g.fillRect(0, 0, S, S);
         g.drawImage(im, (S - im.width * k) / 2, (S - im.height * k) / 2, im.width * k, im.height * k);
         URL.revokeObjectURL(url);
@@ -616,27 +641,34 @@ body::before{
       const s = document.createElement('span'); s.className='nm'; s.textContent = h.name;
       const t = document.createElement('time'); t.textContent = new Date(h.at).toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
       li.append(no);
-      if (state.images[h.name]){ const th = document.createElement('img'); th.className='th'; th.alt=''; th.src = state.images[h.name]; li.append(th); }
+      if (imgOf(h.name)){ const th = document.createElement('img'); th.className='th'; th.alt=''; th.src = imgOf(h.name); li.append(th); }
       li.append(s,t); ol.append(li);
     });
     $('histEmpty').style.display = total ? 'none' : '';
   }
   function openDrawer(open){ $('drawer').classList.toggle('open', open); $('scrim').classList.toggle('show', open); }
 
-  $('inTitle').addEventListener('input', e => { state.title = e.target.value; renderHeader(); save(); });
-  $('inSub').addEventListener('input', e => { state.sub = e.target.value; renderHeader(); save(); });
+  $('inTitle').addEventListener('input', e => { state.title = e.target.value; state.custom = true; renderHeader(); save(); });
+  $('inSub').addEventListener('input', e => { state.sub = e.target.value; state.custom = true; renderHeader(); save(); });
   $('inItems').addEventListener('input', e => {
     if (spinning) return;
     state.items = e.target.value.split('\n').map(s=>s.trim()).filter(Boolean);
+    state.custom = true;
     renderCount(); save(); draw();
     clearTimeout(imgListT); imgListT = setTimeout(renderImgList, 400);
   });
   $('optRemove').addEventListener('change', e => { state.remove = e.target.checked; save(); });
   $('optSound').addEventListener('change', e => { state.sound = e.target.checked; save(); });
-  $('btnShuffle').onclick = () => { if (spinning) return; const a = state.items;
+  $('btnShuffle').onclick = () => { if (spinning) return; state.custom = true; const a = state.items;
     for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
     syncInputs(); save(); draw(); };
-  $('btnReset').onclick = () => { if (spinning || !confirm('Kosongkan semua daftar hadiah?')) return; state.items = []; syncInputs(); save(); draw(); };
+  $('btnBase').onclick = () => {
+    if (spinning) return;
+    if (!base){ toast('Daftar dari GitHub belum termuat — cek koneksi internet'); return; }
+    if (!confirm('Kembalikan judul & daftar hadiah ke versi GitHub? (gambar yang kamu pasang sendiri di perangkat ini tetap disimpan)')) return;
+    state.custom = false; applyBase(); syncInputs(); save(); draw(); toast('Sudah kembali ke daftar hadiah dari GitHub');
+  };
+  $('btnReset').onclick = () => { if (spinning || !confirm('Kosongkan semua daftar hadiah?')) return; state.items = []; state.custom = true; syncInputs(); save(); draw(); };
   $('btnClearHist').onclick = () => { if (!state.history.length || !confirm('Hapus riwayat hadiah yang sudah keluar?')) return; state.history = []; save(); renderHistory(); };
   $('btnShare').onclick = async () => {
     const data = JSON.stringify({t:state.title, s:state.sub, i:state.items});
@@ -665,7 +697,7 @@ body::before{
   let toastT;
   function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),2600); }
 
-  syncInputs(); renderHistory(); save();
+  syncInputs(); renderHistory(); save(); loadBase();
   (document.fonts ? document.fonts.ready : Promise.resolve()).then(draw);
   draw();
 })();

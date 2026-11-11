@@ -1,0 +1,18 @@
+{
+  "title": "Spin Hadiah Adhiya",
+  "sub": "Putar rodanya, raih hadiahnya!",
+  "items": [
+    "Diskon Tambahan Rp.300 Ribu",
+    "Tumbler",
+    "Saldo E-wallet Rp.200 Ribu",
+    "Boneka Unta",
+    "Diskon Tambahan Rp.500 Ribu"
+  ],
+  "images": {
+    "Diskon Tambahan Rp.300 Ribu": "hadiah/diskon-300k.webp",
+    "Tumbler": "hadiah/tumbler.webp",
+    "Saldo E-wallet Rp.200 Ribu": "hadiah/ewallet-200k.webp",
+    "Boneka Unta": "hadiah/boneka-unta.webp",
+    "Diskon Tambahan Rp.500 Ribu": "hadiah/diskon-500k.webp"
+  }
+}
