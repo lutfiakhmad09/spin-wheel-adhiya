@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Undian Umroh Adhiya</title>
-<meta name="description" content="Spin wheel undian event umroh Adhiya — Jagonya Umroh Plus">
+<title>Spin Hadiah Adhiya</title>
+<meta name="description" content="Spin wheel hadiah event Adhiya — Jagonya Umroh Plus">
 <link rel="icon" href="logo-adhiya.png">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Amiri:wght@700&display=swap" rel="stylesheet">
 <style>
@@ -17,112 +17,121 @@ html,body{height:100%}
 body{
   font-family:Poppins,system-ui,sans-serif;color:var(--cream);
   background:
-    radial-gradient(ellipse at 50% 0%, rgba(212,168,75,.18), transparent 60%),
-    radial-gradient(ellipse at 50% 110%, rgba(0,0,0,.45), transparent 60%),
+    radial-gradient(ellipse at 30% 50%, rgba(212,168,75,.16), transparent 55%),
+    radial-gradient(ellipse at 100% 100%, rgba(0,0,0,.45), transparent 60%),
     var(--maroon-d);
-  min-height:100vh;overflow-x:hidden;
+  min-height:100vh;overflow:hidden;
 }
-/* geometric islamic pattern */
 body::before{
   content:"";position:fixed;inset:0;pointer-events:none;opacity:.07;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='none' stroke='%23f3d991' stroke-width='1.2'%3E%3Cpath d='M40 4l10 26 26 10-26 10-10 26-10-26L4 40l26-10z'/%3E%3Crect x='22' y='22' width='36' height='36' transform='rotate(45 40 40)'/%3E%3Ccircle cx='40' cy='40' r='8'/%3E%3C/g%3E%3C/svg%3E");
 }
-.app{position:relative;display:grid;grid-template-columns:1fr 360px;gap:28px;max-width:1400px;margin:0 auto;padding:20px 24px 32px;min-height:100vh}
-.app.presentasi{grid-template-columns:1fr}
-.app.presentasi .panel{display:none}
 
-/* header */
-.stage{display:flex;flex-direction:column;align-items:center;gap:14px}
-.brand{
-  background:#fff;border-radius:18px;padding:10px 26px;
-  box-shadow:0 8px 30px rgba(0,0,0,.35), 0 0 0 3px var(--gold);
+/* ===== 16:9 stage (TV) ===== */
+.stage{
+  position:relative;height:100vh;display:grid;
+  grid-template-columns:auto 1fr;align-items:center;gap:4vw;
+  padding:3vh 4vw;
 }
-.brand img{height:64px;display:block}
-.title{
-  text-align:center;font-weight:800;letter-spacing:.5px;line-height:1.15;
-  font-size:clamp(26px,3.6vw,46px);
-  background:linear-gradient(180deg,#fff6d8,var(--gold) 70%,#a87a24);
-  -webkit-background-clip:text;background-clip:text;color:transparent;
-  text-shadow:0 2px 18px rgba(212,168,75,.25);
-}
-.subtitle{font-size:clamp(14px,1.5vw,18px);color:var(--gold-l);opacity:.9;margin-top:-6px;text-align:center}
-
-/* wheel */
-.wheel-wrap{position:relative;width:min(78vh,92vw,720px);aspect-ratio:1;margin-top:6px}
-.app.presentasi .wheel-wrap{width:min(80vh,92vw,820px)}
-#wheel{width:100%;height:100%;display:block;filter:drop-shadow(0 18px 40px rgba(0,0,0,.5))}
+.wheel-wrap{position:relative;height:min(92vh,56vw);aspect-ratio:1}
+#wheel{width:100%;height:100%;display:block;filter:drop-shadow(0 2vh 4vh rgba(0,0,0,.5))}
 .pointer{
-  position:absolute;top:-10px;left:50%;transform:translateX(-50%);
-  width:52px;height:64px;z-index:3;filter:drop-shadow(0 4px 6px rgba(0,0,0,.5));
+  position:absolute;top:-1.2%;left:50%;transform:translateX(-50%);
+  width:7.5%;aspect-ratio:52/64;z-index:3;filter:drop-shadow(0 4px 6px rgba(0,0,0,.5));
 }
 .pointer.tick{animation:tick .12s ease-out}
 @keyframes tick{0%{transform:translateX(-50%) rotate(0)}40%{transform:translateX(-50%) rotate(-14deg)}100%{transform:translateX(-50%) rotate(0)}}
 .hub{
   position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-  width:22%;aspect-ratio:1;border-radius:50%;border:none;cursor:pointer;z-index:2;
+  width:21%;aspect-ratio:1;border-radius:50%;border:none;cursor:pointer;z-index:2;
   background:radial-gradient(circle at 35% 30%,#fff 0%,var(--cream) 45%,#e9dcc0 100%);
-  box-shadow:0 0 0 6px var(--gold),0 0 0 10px var(--maroon),0 8px 24px rgba(0,0,0,.5);
+  box-shadow:0 0 0 .6vh var(--gold),0 0 0 1.1vh var(--maroon),0 1vh 3vh rgba(0,0,0,.5);
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  font-family:inherit;color:var(--maroon);font-weight:800;font-size:clamp(14px,2.2vw,24px);letter-spacing:1px;
+  font-family:inherit;color:var(--maroon);font-weight:800;font-size:min(3.2vh,1.9vw);letter-spacing:1px;
   transition:transform .15s;
 }
 .hub:hover{transform:translate(-50%,-50%) scale(1.04)}
 .hub:active{transform:translate(-50%,-50%) scale(.97)}
-.hub small{font-size:.48em;font-weight:600;letter-spacing:.5px;opacity:.75}
+.hub small{font-size:.45em;font-weight:600;letter-spacing:.5px;opacity:.7;margin-top:2px}
 .hub:disabled{cursor:default}
-.hint{font-size:13px;color:var(--gold-l);opacity:.7}
+
+.side{display:flex;flex-direction:column;gap:2.4vh;min-width:0;height:100%;justify-content:center}
+.brand{
+  align-self:flex-start;background:#fff;border-radius:2vh;padding:1.2vh 2.4vh;
+  box-shadow:0 1vh 3vh rgba(0,0,0,.35), 0 0 0 .35vh var(--gold);
+}
+.brand img{height:8vh;display:block}
+.title{
+  font-weight:800;line-height:1.1;font-size:min(7.2vh,4.2vw);
+  background:linear-gradient(180deg,#fff6d8,var(--gold) 70%,#a87a24);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.subtitle{font-size:min(2.8vh,1.6vw);color:var(--gold-l);margin-top:-1vh}
+.board{
+  background:rgba(0,0,0,.22);border:1px solid rgba(243,217,145,.25);border-radius:2.2vh;
+  padding:2.2vh 2.6vh;display:flex;flex-direction:column;gap:1.4vh;min-height:0;flex:0 1 auto;max-height:48vh;
+}
+.board h3{font-size:min(2.2vh,1.3vw);letter-spacing:.3em;text-transform:uppercase;color:var(--gold);font-weight:700}
+.history{list-style:none;display:flex;flex-direction:column;gap:1vh;overflow:hidden;counter-reset:h}
+.history li{
+  display:flex;align-items:center;gap:1.4vh;font-size:min(2.9vh,1.7vw);font-weight:600;color:#fff;
+  padding:1vh 1.4vh;border-radius:1.2vh;background:rgba(255,255,255,.06);
+}
+.history li:first-child{background:linear-gradient(90deg,rgba(212,168,75,.35),rgba(212,168,75,.08));}
+.history li .no{
+  flex:none;width:3.6vh;height:3.6vh;border-radius:50%;background:var(--gold);color:var(--maroon-d);
+  font-size:1.7vh;font-weight:800;display:grid;place-items:center;
+}
+.history li .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.history li time{font-size:1.7vh;color:var(--gold-l);opacity:.7;font-weight:400}
+.empty{font-size:min(2.4vh,1.4vw);color:var(--gold-l);opacity:.65;font-style:italic}
+.hint{font-size:min(1.9vh,1.1vw);color:var(--gold-l);opacity:.55}
 
 /* top-right controls */
-.tools{position:fixed;top:14px;right:14px;display:flex;gap:8px;z-index:20}
+.tools{position:fixed;top:2vh;right:1.6vw;display:flex;gap:8px;z-index:30;opacity:.35;transition:opacity .2s}
+.tools:hover,.tools:focus-within{opacity:1}
 .icon-btn{
   width:42px;height:42px;border-radius:12px;border:1px solid rgba(243,217,145,.35);
-  background:rgba(0,0,0,.25);color:var(--gold-l);cursor:pointer;display:grid;place-items:center;
-  backdrop-filter:blur(6px);transition:background .15s;
+  background:rgba(0,0,0,.3);color:var(--gold-l);cursor:pointer;display:grid;place-items:center;
 }
 .icon-btn:hover{background:rgba(212,168,75,.25)}
 .icon-btn svg{width:20px;height:20px}
-.app:not(.presentasi) .tools{right:calc(14px + 0px)}
 
-/* panel */
-.panel{
-  background:rgba(255,248,235,.97);color:var(--ink);border-radius:20px;padding:20px;
-  box-shadow:0 20px 50px rgba(0,0,0,.4);align-self:start;position:sticky;top:20px;
-  display:flex;flex-direction:column;gap:14px;max-height:calc(100vh - 40px);overflow:auto;margin-top:56px;
+/* settings drawer */
+.drawer{
+  position:fixed;top:0;right:0;height:100vh;width:min(400px,100vw);z-index:40;
+  background:#fff8eb;color:var(--ink);box-shadow:-20px 0 50px rgba(0,0,0,.45);
+  transform:translateX(105%);transition:transform .3s ease;
+  display:flex;flex-direction:column;gap:14px;padding:22px;overflow:auto;
 }
-.panel h2{font-size:16px;color:var(--maroon);display:flex;align-items:center;justify-content:space-between}
-.panel label{font-size:12px;font-weight:600;color:#6b4a50;display:block;margin-bottom:4px}
-.panel input[type=text],.panel textarea{
+.drawer.open{transform:none}
+.drawer h2{font-size:17px;color:var(--maroon);display:flex;align-items:center;justify-content:space-between;gap:8px}
+.drawer label{font-size:12px;font-weight:600;color:#6b4a50;display:block;margin-bottom:4px}
+.drawer input[type=text],.drawer textarea{
   width:100%;font-family:inherit;font-size:14px;border:1.5px solid #e6d6bd;border-radius:10px;padding:9px 11px;background:#fff;color:var(--ink);
 }
-.panel textarea{min-height:200px;resize:vertical;line-height:1.55}
-.panel input:focus,.panel textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(212,168,75,.25)}
-.count{font-size:12px;color:#8a6a70;font-weight:500}
+.drawer textarea{min-height:230px;resize:vertical;line-height:1.6}
+.drawer input:focus,.drawer textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(212,168,75,.25)}
+.note{font-size:12px;color:#8a6a70;line-height:1.5}
 .row{display:flex;gap:8px;flex-wrap:wrap}
 .btn{
-  flex:1;min-width:0;font-family:inherit;font-size:13px;font-weight:600;border-radius:10px;padding:9px 10px;cursor:pointer;
+  flex:1;font-family:inherit;font-size:13px;font-weight:600;border-radius:10px;padding:9px 10px;cursor:pointer;
   border:1.5px solid var(--maroon);background:#fff;color:var(--maroon);white-space:nowrap;
 }
 .btn:hover{background:#fbeee8}
 .btn.primary{background:var(--maroon);color:#fff}
 .btn.primary:hover{background:var(--maroon-l)}
-.check{display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;user-select:none}
-.check input{accent-color:var(--maroon);width:16px;height:16px}
-.history{list-style:none;display:flex;flex-direction:column;gap:6px;counter-reset:h}
-.history li{
-  counter-increment:h;display:flex;gap:10px;align-items:center;font-size:14px;font-weight:500;
-  background:#fff;border:1px solid #eedfc7;border-radius:10px;padding:7px 10px;
-}
-.history li::before{
-  content:counter(h);flex:none;width:22px;height:22px;border-radius:50%;background:var(--gold);color:var(--maroon-d);
-  font-size:11px;font-weight:700;display:grid;place-items:center;
-}
-.history li span{flex:1;overflow-wrap:anywhere}
-.history time{font-size:11px;color:#9a7e83;font-weight:400}
-.empty{font-size:13px;color:#9a7e83;font-style:italic}
+.drawer > .btn{flex:none;padding:11px}
+.btn.sm{flex:none;padding:5px 12px;font-size:12px}
+.check{display:flex;align-items:flex-start;gap:8px;font-size:13px;cursor:pointer;user-select:none;line-height:1.4}
+.check input{accent-color:var(--maroon);width:16px;height:16px;margin-top:2px;flex:none}
 .divider{height:1px;background:#eadbc2}
+.scrim{position:fixed;inset:0;z-index:35;background:rgba(0,0,0,.35);display:none}
+.scrim.show{display:block}
+
 .toast{
   position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);opacity:0;
-  background:var(--ink);color:#fff;padding:10px 18px;border-radius:10px;font-size:14px;z-index:60;transition:.25s;pointer-events:none;
+  background:var(--ink);color:#fff;padding:10px 18px;border-radius:10px;font-size:14px;z-index:70;transition:.25s;pointer-events:none;
 }
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
@@ -130,97 +139,110 @@ body::before{
 .modal{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;background:rgba(20,2,6,.72);backdrop-filter:blur(4px);padding:16px}
 .modal.show{display:flex}
 .card{
-  position:relative;width:min(560px,100%);text-align:center;border-radius:26px;padding:34px 28px 26px;
+  position:relative;width:min(62vw,880px);text-align:center;border-radius:3vh;padding:4vh 4vh 3vh;
   background:linear-gradient(180deg,#fffaf0,#f6e8cc);color:var(--ink);
-  box-shadow:0 0 0 4px var(--gold),0 0 0 10px var(--maroon),0 30px 80px rgba(0,0,0,.6);
+  box-shadow:0 0 0 .5vh var(--gold),0 0 0 1.2vh var(--maroon),0 4vh 10vh rgba(0,0,0,.6);
   animation:pop .5s cubic-bezier(.2,1.4,.4,1);
 }
 @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
-.card .arab{font-family:Amiri,serif;font-size:32px;color:var(--maroon);line-height:1.7}
-.card .lbl{font-size:14px;letter-spacing:3px;text-transform:uppercase;color:#8a6a70;font-weight:600;margin-top:6px}
+.card .arab{font-family:Amiri,serif;font-size:min(5vh,3vw);color:var(--maroon);line-height:1.6}
+.card .lbl{font-size:min(2.4vh,1.4vw);letter-spacing:.35em;text-transform:uppercase;color:#8a6a70;font-weight:600}
 .card .name{
-  font-size:clamp(30px,6vw,52px);font-weight:800;color:var(--maroon);margin:10px 0 6px;line-height:1.15;overflow-wrap:anywhere;
+  font-size:min(9vh,5vw);font-weight:800;color:var(--maroon);margin:1.4vh 0 .6vh;line-height:1.1;overflow-wrap:anywhere;
 }
-.card .msg{font-size:15px;color:#6b4a50}
-.card .row{margin-top:22px;justify-content:center}
-.card .btn{flex:0 1 auto;padding:11px 20px;font-size:14px}
-.card img{height:40px;margin-top:18px;opacity:.9}
+.card .row{margin-top:3vh;justify-content:center}
+.card .btn{flex:0 1 auto;padding:1.4vh 3vh;font-size:min(2.2vh,1.3vw)}
+.card img{height:5vh;margin-top:2.4vh}
 #confetti{position:fixed;inset:0;pointer-events:none;z-index:55}
 
-@media (max-width:900px){
-  .app{grid-template-columns:1fr;padding:16px 16px 28px}
-  .panel{position:static;max-height:none;margin-top:0}
-  .brand img{height:46px}
-  .wheel-wrap{width:min(92vw,560px)}
+/* portrait / phone fallback */
+@media (max-aspect-ratio:1/1){
+  body{overflow:auto}
+  .stage{grid-template-columns:1fr;height:auto;min-height:100vh;justify-items:center;padding:70px 16px 28px;gap:20px}
+  .wheel-wrap{height:auto;width:min(92vw,560px)}
+  .side{order:-1;align-items:center;text-align:center;height:auto}
+  .brand{align-self:center}
+  .brand img{height:48px}
+  .title{font-size:30px}.subtitle{font-size:15px;margin-top:-8px}
+  .board{width:100%;max-height:none}
+  .board h3{font-size:12px}.history li{font-size:16px}
+  .hub{font-size:20px}
+  .card{width:100%}.card .arab{font-size:28px}.card .lbl{font-size:12px}.card .name{font-size:34px}.card .btn{font-size:14px}
+  .hint{font-size:12px}
 }
 </style>
 </head>
 <body>
-<div class="app" id="app">
-  <section class="stage">
-    <div class="brand"><img src="logo-adhiya.png" alt="Adhiya — Jagonya Umroh Plus"></div>
-    <h1 class="title" id="titleText">Undian Umroh Gratis</h1>
-    <p class="subtitle" id="subText">Semoga Allah mudahkan langkah ke Baitullah</p>
-    <div class="wheel-wrap">
-      <svg class="pointer" id="pointer" viewBox="0 0 52 64" aria-hidden="true">
-        <defs><linearGradient id="pg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff3c4"/><stop offset=".55" stop-color="#d4a84b"/><stop offset="1" stop-color="#9c6f1e"/></linearGradient></defs>
-        <path d="M26 62 L4 16 A24 24 0 1 1 48 16 Z" fill="url(#pg)" stroke="#4e0512" stroke-width="3"/>
-        <circle cx="26" cy="20" r="8" fill="#7d0a1d" stroke="#fff3c4" stroke-width="2"/>
-      </svg>
-      <canvas id="wheel" width="1000" height="1000" aria-label="Roda undian"></canvas>
-      <button class="hub" id="spinBtn" aria-label="Putar roda">PUTAR<small>klik / spasi</small></button>
-    </div>
-    <p class="hint" id="hint">Tekan tombol PUTAR atau tombol spasi di keyboard</p>
-  </section>
+<main class="stage" id="stage">
+  <div class="wheel-wrap">
+    <svg class="pointer" id="pointer" viewBox="0 0 52 64" aria-hidden="true">
+      <defs><linearGradient id="pg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff3c4"/><stop offset=".55" stop-color="#d4a84b"/><stop offset="1" stop-color="#9c6f1e"/></linearGradient></defs>
+      <path d="M26 62 L4 16 A24 24 0 1 1 48 16 Z" fill="url(#pg)" stroke="#4e0512" stroke-width="3"/>
+      <circle cx="26" cy="20" r="8" fill="#7d0a1d" stroke="#fff3c4" stroke-width="2"/>
+    </svg>
+    <canvas id="wheel" width="1200" height="1200" aria-label="Roda hadiah"></canvas>
+    <button class="hub" id="spinBtn" aria-label="Putar roda">PUTAR<small>klik / spasi</small></button>
+  </div>
 
-  <aside class="panel" id="panel">
-    <h2>Pengaturan Undian</h2>
+  <section class="side">
+    <div class="brand"><img src="logo-adhiya.png" alt="Adhiya — Jagonya Umroh Plus"></div>
     <div>
-      <label for="inTitle">Judul acara</label>
-      <input type="text" id="inTitle" maxlength="80">
+      <h1 class="title" id="titleText">Spin Hadiah</h1>
+      <p class="subtitle" id="subText"></p>
     </div>
-    <div>
-      <label for="inSub">Sub judul</label>
-      <input type="text" id="inSub" maxlength="120">
+    <div class="board">
+      <h3>Hadiah yang sudah keluar</h3>
+      <ol class="history" id="history"></ol>
+      <p class="empty" id="histEmpty">Belum ada — ayo putar rodanya!</p>
     </div>
-    <div>
-      <label for="inItems">Isi roda (satu nama / hadiah per baris) <span class="count" id="count"></span></label>
-      <textarea id="inItems" spellcheck="false"></textarea>
-    </div>
-    <div class="row">
-      <button class="btn" id="btnShuffle">Acak urutan</button>
-      <button class="btn" id="btnSort">Urutkan A–Z</button>
-    </div>
-    <label class="check"><input type="checkbox" id="optRemove"> Hapus pemenang dari roda setelah terpilih</label>
-    <label class="check"><input type="checkbox" id="optSound" checked> Suara putaran</label>
-    <div class="row">
-      <button class="btn primary" id="btnShare">Salin link berbagi</button>
-      <button class="btn" id="btnReset">Kosongkan</button>
-    </div>
-    <div class="divider"></div>
-    <h2>Riwayat Pemenang <button class="btn" id="btnClearHist" style="flex:none;padding:4px 12px;font-size:12px">Hapus</button></h2>
-    <ol class="history" id="history"></ol>
-    <p class="empty" id="histEmpty">Belum ada pemenang.</p>
-  </aside>
-</div>
+    <p class="hint">Tekan tombol PUTAR atau spasi · ⚙ pengaturan di pojok kanan atas</p>
+  </section>
+</main>
 
 <div class="tools">
-  <button class="icon-btn" id="btnPanel" title="Sembunyikan / tampilkan pengaturan (mode presentasi)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+  <button class="icon-btn" id="btnSettings" title="Pengaturan hadiah">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
   </button>
-  <button class="icon-btn" id="btnFull" title="Layar penuh">
+  <button class="icon-btn" id="btnFull" title="Layar penuh (TV)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
   </button>
 </div>
 
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-label="Pengaturan">
+  <h2>Pengaturan Hadiah <button class="btn sm" id="btnCloseDrawer">Tutup ✕</button></h2>
+  <div>
+    <label for="inTitle">Judul acara</label>
+    <input type="text" id="inTitle" maxlength="80">
+  </div>
+  <div>
+    <label for="inSub">Sub judul</label>
+    <input type="text" id="inSub" maxlength="120">
+  </div>
+  <div>
+    <label for="inItems">Daftar hadiah — satu hadiah per baris <span id="count"></span></label>
+    <textarea id="inItems" spellcheck="false"></textarea>
+    <p class="note">Hadiah yang lebih sering ingin muncul? Tulis dua kali atau lebih. Contoh “Coba Lagi” ditulis 2 baris = 2 bagian di roda.</p>
+  </div>
+  <div class="row">
+    <button class="btn" id="btnShuffle">Acak urutan</button>
+    <button class="btn" id="btnReset">Kosongkan</button>
+  </div>
+  <label class="check"><input type="checkbox" id="optRemove"> Hapus hadiah dari roda setelah keluar (hadiahnya cuma 1)</label>
+  <label class="check"><input type="checkbox" id="optSound" checked> Suara putaran</label>
+  <button class="btn primary" id="btnShare">Salin link berbagi (isi hadiah ikut)</button>
+  <div class="divider"></div>
+  <h2>Riwayat <button class="btn sm" id="btnClearHist">Hapus riwayat</button></h2>
+  <p class="note">Riwayat tampil di layar utama. Hapus sebelum acara dimulai.</p>
+</aside>
+
 <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="winName">
   <div class="card">
     <div class="arab">بَارَكَ ٱللَّٰهُ</div>
-    <div class="lbl">Selamat kepada</div>
+    <div class="lbl">Selamat! Anda mendapatkan</div>
     <div class="name" id="winName">—</div>
-    <div class="msg" id="winMsg">Terpilih dalam undian</div>
     <div class="row">
-      <button class="btn" id="btnRemoveWin">Hapus dari roda</button>
+      <button class="btn" id="btnRemoveWin">Hapus hadiah ini dari roda</button>
       <button class="btn primary" id="btnClose">Lanjut</button>
     </div>
     <img src="logo-adhiya.png" alt="">
@@ -231,11 +253,11 @@ body::before{
 
 <script>
 (() => {
-  const KEY = 'adhiya-spin-v1';
+  const KEY = 'adhiya-spin-hadiah-v2';
   const DEFAULT = {
-    title: 'Undian Umroh Gratis',
-    sub: 'Semoga Allah mudahkan langkah ke Baitullah',
-    items: ['Peserta 1','Peserta 2','Peserta 3','Peserta 4','Peserta 5','Peserta 6','Peserta 7','Peserta 8'],
+    title: 'Spin Hadiah Adhiya',
+    sub: 'Putar rodanya, raih hadiahnya!',
+    items: ['Hadiah 1','Hadiah 2','Coba Lagi','Hadiah 3','Hadiah 4','Coba Lagi','Hadiah 5','Hadiah 6'],
     remove: false, sound: true, history: []
   };
   const $ = id => document.getElementById(id);
@@ -248,7 +270,6 @@ body::before{
     let s = null;
     try { s = JSON.parse(localStorage.getItem(KEY)); } catch(e) {}
     s = Object.assign({}, DEFAULT, s || {});
-    // shared link overrides list/title
     try {
       const h = location.hash.slice(1);
       if (h.startsWith('d=')) {
@@ -256,7 +277,7 @@ body::before{
         if (Array.isArray(shared.i)) s.items = shared.i.map(String);
         if (shared.t != null) s.title = String(shared.t);
         if (shared.s != null) s.sub = String(shared.s);
-        history.replaceState(null, '', location.pathname + location.search);
+        window.history.replaceState(null, '', location.pathname + location.search);
       }
     } catch(e) {}
     return s;
@@ -271,31 +292,28 @@ body::before{
     {bg:'#d4a84b', fg:'#4e0512'},
   ];
   function colorFor(i, n){
-    // avoid same color touching at the seam
     let c = PALETTE[i % PALETTE.length];
     if (n > 1 && i === n - 1 && (n - 1) % PALETTE.length === 0) c = PALETTE[2];
     return c;
   }
 
   /* ---------- draw ---------- */
-  let angle = 0; // radians, wheel rotation
+  let angle = 0, bulbPhase = 0, spinning = false;
   function draw(){
     const items = state.items, n = items.length;
     ctx.clearRect(0,0,W,W);
     ctx.save(); ctx.translate(R,R);
-
-    // outer gold rim
-    const rimR = R - 6;
+    const rimR = R - 8;
     let g = ctx.createLinearGradient(-R,-R,R,R);
     g.addColorStop(0,'#fff3c4'); g.addColorStop(.35,'#d4a84b'); g.addColorStop(.7,'#9c6f1e'); g.addColorStop(1,'#f3d991');
     ctx.beginPath(); ctx.arc(0,0,rimR,0,Math.PI*2); ctx.fillStyle = g; ctx.fill();
-    ctx.beginPath(); ctx.arc(0,0,rimR-14,0,Math.PI*2); ctx.fillStyle = '#4e0512'; ctx.fill();
+    ctx.beginPath(); ctx.arc(0,0,rimR-17,0,Math.PI*2); ctx.fillStyle = '#4e0512'; ctx.fill();
 
-    const r = rimR - 22;
+    const r = rimR - 26;
     if (n === 0) {
       ctx.beginPath(); ctx.arc(0,0,r,0,Math.PI*2); ctx.fillStyle='#fbf1dc'; ctx.fill();
-      ctx.fillStyle='#7d0a1d'; ctx.font='600 34px Poppins'; ctx.textAlign='center';
-      ctx.fillText('Isi roda masih kosong', 0, -r*0.45);
+      ctx.fillStyle='#7d0a1d'; ctx.font='600 40px Poppins'; ctx.textAlign='center';
+      ctx.fillText('Isi daftar hadiah dulu (⚙)', 0, -r*0.45);
     } else {
       const seg = Math.PI*2 / n;
       ctx.rotate(angle);
@@ -303,97 +321,80 @@ body::before{
         const a0 = -Math.PI/2 + i*seg, a1 = a0 + seg, c = colorFor(i,n);
         ctx.beginPath(); ctx.moveTo(0,0); ctx.arc(0,0,r,a0,a1); ctx.closePath();
         ctx.fillStyle = c.bg; ctx.fill();
-        ctx.strokeStyle = 'rgba(212,168,75,.85)'; ctx.lineWidth = 3; ctx.stroke();
-
-        // label
+        ctx.strokeStyle = 'rgba(212,168,75,.85)'; ctx.lineWidth = 3.5; ctx.stroke();
         ctx.save();
         ctx.rotate(a0 + seg/2);
         ctx.fillStyle = c.fg; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
-        const maxW = r*0.66;
-        let fs = Math.min(46, Math.max(14, (seg*r*0.62)));
-        fs = Math.min(fs, 46);
+        const maxW = r*0.64;
+        let fs = Math.min(56, Math.max(16, seg*r*0.55));
         let text = items[i];
         ctx.font = `700 ${fs}px Poppins`;
-        while (ctx.measureText(text).width > maxW && fs > 14){ fs -= 1; ctx.font = `700 ${fs}px Poppins`; }
+        while (ctx.measureText(text).width > maxW && fs > 18){ fs -= 1; ctx.font = `700 ${fs}px Poppins`; }
         if (ctx.measureText(text).width > maxW){
           while (text.length > 1 && ctx.measureText(text+'…').width > maxW) text = text.slice(0,-1);
           text += '…';
         }
-        ctx.fillText(text, r - 30, 0);
+        ctx.fillText(text, r - 36, 0);
         ctx.restore();
       }
       ctx.rotate(-angle);
     }
-    // inner shade ring
     let sh = ctx.createRadialGradient(0,0,r*0.75,0,0,r);
     sh.addColorStop(0,'rgba(0,0,0,0)'); sh.addColorStop(1,'rgba(0,0,0,.18)');
     ctx.beginPath(); ctx.arc(0,0,r,0,Math.PI*2); ctx.fillStyle = sh; ctx.fill();
-
-    // rim lights
-    const bulbs = 24;
+    const bulbs = 28;
     for (let i=0;i<bulbs;i++){
-      const a = i/bulbs*Math.PI*2, x = Math.cos(a)*(rimR-7), y = Math.sin(a)*(rimR-7);
+      const a = i/bulbs*Math.PI*2, x = Math.cos(a)*(rimR-8.5), y = Math.sin(a)*(rimR-8.5);
       const on = (i + bulbPhase) % 2 === 0;
-      ctx.beginPath(); ctx.arc(x,y,6,0,Math.PI*2);
+      ctx.beginPath(); ctx.arc(x,y,7,0,Math.PI*2);
       ctx.fillStyle = on ? '#fffbe8' : '#c99a3c';
-      if (on){ ctx.shadowColor='#fff3c4'; ctx.shadowBlur=14; }
+      if (on){ ctx.shadowColor='#fff3c4'; ctx.shadowBlur=16; }
       ctx.fill(); ctx.shadowBlur = 0;
     }
     ctx.restore();
   }
-  let bulbPhase = 0;
   setInterval(() => { bulbPhase = (bulbPhase+1)%2; if (!spinning) draw(); }, 600);
 
   /* ---------- sound ---------- */
   let audio;
+  function ac(){ audio = audio || new (window.AudioContext||window.webkitAudioContext)(); return audio; }
   function tickSound(){
     if (!state.sound) return;
-    try {
-      audio = audio || new (window.AudioContext||window.webkitAudioContext)();
-      const o = audio.createOscillator(), gn = audio.createGain();
-      o.type = 'triangle'; o.frequency.value = 1400;
-      gn.gain.setValueAtTime(.12, audio.currentTime);
-      gn.gain.exponentialRampToValueAtTime(.001, audio.currentTime + .05);
-      o.connect(gn).connect(audio.destination); o.start(); o.stop(audio.currentTime + .06);
-    } catch(e) {}
+    try { const a=ac(), o=a.createOscillator(), gn=a.createGain();
+      o.type='triangle'; o.frequency.value=1400;
+      gn.gain.setValueAtTime(.12,a.currentTime); gn.gain.exponentialRampToValueAtTime(.001,a.currentTime+.05);
+      o.connect(gn).connect(a.destination); o.start(); o.stop(a.currentTime+.06); } catch(e) {}
   }
   function winSound(){
     if (!state.sound) return;
-    try {
-      audio = audio || new (window.AudioContext||window.webkitAudioContext)();
-      [523,659,784,1047].forEach((f,i)=>{
-        const o = audio.createOscillator(), gn = audio.createGain(), t = audio.currentTime + i*.12;
+    try { const a=ac();
+      [523,659,784,1047].forEach((f,i)=>{ const o=a.createOscillator(), gn=a.createGain(), t=a.currentTime+i*.12;
         o.type='sine'; o.frequency.value=f;
         gn.gain.setValueAtTime(0,t); gn.gain.linearRampToValueAtTime(.18,t+.02); gn.gain.exponentialRampToValueAtTime(.001,t+.6);
-        o.connect(gn).connect(audio.destination); o.start(t); o.stop(t+.65);
-      });
-    } catch(e) {}
+        o.connect(gn).connect(a.destination); o.start(t); o.stop(t+.65); }); } catch(e) {}
   }
 
   /* ---------- spin ---------- */
-  let spinning = false, lastWinnerIdx = -1;
+  let lastWinnerIdx = -1;
+  const rand = () => crypto.getRandomValues(new Uint32Array(1))[0] / 2**32;
   function indexAtPointer(){
     const n = state.items.length, seg = Math.PI*2/n;
-    // pointer at top (-PI/2). segment i spans [-PI/2 + i*seg + angle, ...]
-    let a = ((-angle) % (Math.PI*2) + Math.PI*2) % (Math.PI*2);
+    const a = ((-angle) % (Math.PI*2) + Math.PI*2) % (Math.PI*2);
     return Math.floor(a / seg) % n;
   }
   function spin(){
     const n = state.items.length;
-    if (spinning) return;
-    if (n < 2){ toast('Isi roda minimal 2 baris dulu ya'); return; }
+    if (spinning || $('modal').classList.contains('show')) return;
+    if (n < 2){ toast('Isi minimal 2 hadiah dulu di pengaturan ⚙'); return; }
     spinning = true; $('spinBtn').disabled = true;
-    const target = Math.floor(crypto.getRandomValues(new Uint32Array(1))[0] / 2**32 * n);
-    const seg = Math.PI*2/n;
-    const jitter = (crypto.getRandomValues(new Uint32Array(1))[0] / 2**32 - .5) * seg * 0.8;
-    // final angle so that target is under pointer: -angle mod 2PI = target*seg + seg/2 + jitter
+    const seg = Math.PI*2/n, target = Math.floor(rand()*n);
+    const jitter = (rand() - .5) * seg * 0.8;
     const want = -(target*seg + seg/2 + jitter);
-    const cur = angle;
-    const turns = 7 + Math.floor(Math.random()*3);
+    const cur = angle, turns = 7 + Math.floor(rand()*3);
     let end = want - Math.PI*2*Math.ceil((want - cur)/(Math.PI*2));
-    end += Math.PI*2*turns; // rotate clockwise (increasing angle)
+    end += Math.PI*2*turns;
     while (end <= cur) end += Math.PI*2;
-    const dur = 6500 + Math.random()*1500, t0 = performance.now();
+    const dur = 6500 + rand()*1500, t0 = performance.now();
     let lastIdx = indexAtPointer();
     const ease = t => 1 - Math.pow(1 - t, 4);
     function frame(now){
@@ -412,7 +413,6 @@ body::before{
     lastWinnerIdx = i;
     const name = state.items[i];
     $('winName').textContent = name;
-    $('winMsg').textContent = state.title ? `Pemenang ${state.title}` : 'Terpilih dalam undian';
     state.history.unshift({name, at: Date.now()});
     save(); renderHistory();
     $('btnRemoveWin').style.display = state.remove ? 'none' : '';
@@ -432,10 +432,11 @@ body::before{
   function confetti(){
     cf.width = innerWidth; cf.height = innerHeight;
     const cols = ['#d4a84b','#f3d991','#ffffff','#a3152d','#7d0a1d','#fff3c4'];
-    for (let i=0;i<220;i++) parts.push({
-      x: innerWidth/2 + (Math.random()-.5)*200, y: innerHeight*0.45,
-      vx:(Math.random()-.5)*22, vy: -Math.random()*20-6, g:.45+Math.random()*.2,
-      s:6+Math.random()*8, r:Math.random()*6, vr:(Math.random()-.5)*.4, c: cols[i%cols.length], life: 0
+    const k = innerHeight/900;
+    for (let i=0;i<260;i++) parts.push({
+      x: innerWidth/2 + (Math.random()-.5)*300, y: innerHeight*0.45,
+      vx:(Math.random()-.5)*26*k, vy:(-Math.random()*22-6)*k, g:.45*k+Math.random()*.2,
+      s:(7+Math.random()*9)*k, r:Math.random()*6, vr:(Math.random()-.5)*.4, c: cols[i%cols.length], life: 0
     });
     if (!cfRunning){ cfRunning = true; requestAnimationFrame(cfLoop); }
   }
@@ -447,7 +448,7 @@ body::before{
     if (parts.length) requestAnimationFrame(cfLoop); else { cfRunning = false; cc.clearRect(0,0,cf.width,cf.height); }
   }
 
-  /* ---------- UI bindings ---------- */
+  /* ---------- UI ---------- */
   function syncInputs(){
     $('inTitle').value = state.title; $('inSub').value = state.sub;
     $('inItems').value = state.items.join('\n');
@@ -458,19 +459,22 @@ body::before{
     $('titleText').textContent = state.title || ' ';
     $('subText').textContent = state.sub || '';
     $('subText').style.display = state.sub ? '' : 'none';
-    document.title = state.title ? `${state.title} — Adhiya` : 'Undian Umroh Adhiya';
+    document.title = state.title || 'Spin Hadiah Adhiya';
   }
-  function renderCount(){ $('count').textContent = `(${state.items.length} baris)`; }
+  function renderCount(){ $('count').textContent = `(${state.items.length} bagian)`; }
   function renderHistory(){
     const ol = $('history'); ol.innerHTML = '';
-    state.history.slice().reverse().forEach(h => {
+    const total = state.history.length;
+    state.history.slice(0, 6).forEach((h, k) => {
       const li = document.createElement('li');
-      const s = document.createElement('span'); s.textContent = h.name;
+      const no = document.createElement('span'); no.className='no'; no.textContent = total - k;
+      const s = document.createElement('span'); s.className='nm'; s.textContent = h.name;
       const t = document.createElement('time'); t.textContent = new Date(h.at).toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
-      li.append(s,t); ol.append(li);
+      li.append(no,s,t); ol.append(li);
     });
-    $('histEmpty').style.display = state.history.length ? 'none' : '';
+    $('histEmpty').style.display = total ? 'none' : '';
   }
+  function openDrawer(open){ $('drawer').classList.toggle('open', open); $('scrim').classList.toggle('show', open); }
 
   $('inTitle').addEventListener('input', e => { state.title = e.target.value; renderHeader(); save(); });
   $('inSub').addEventListener('input', e => { state.sub = e.target.value; renderHeader(); save(); });
@@ -484,26 +488,28 @@ body::before{
   $('btnShuffle').onclick = () => { if (spinning) return; const a = state.items;
     for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
     syncInputs(); save(); draw(); };
-  $('btnSort').onclick = () => { if (spinning) return; state.items.sort((a,b)=>a.localeCompare(b,'id')); syncInputs(); save(); draw(); };
-  $('btnReset').onclick = () => { if (spinning) return; if (!confirm('Kosongkan semua isi roda?')) return; state.items = []; syncInputs(); save(); draw(); };
-  $('btnClearHist').onclick = () => { if (!state.history.length || !confirm('Hapus riwayat pemenang?')) return; state.history = []; save(); renderHistory(); };
+  $('btnReset').onclick = () => { if (spinning || !confirm('Kosongkan semua daftar hadiah?')) return; state.items = []; syncInputs(); save(); draw(); };
+  $('btnClearHist').onclick = () => { if (!state.history.length || !confirm('Hapus riwayat hadiah yang sudah keluar?')) return; state.history = []; save(); renderHistory(); };
   $('btnShare').onclick = async () => {
     const data = JSON.stringify({t:state.title, s:state.sub, i:state.items});
     const b64 = btoa(unescape(encodeURIComponent(data))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
     const url = location.origin + location.pathname + '#d=' + b64;
-    try { await navigator.clipboard.writeText(url); toast('Link disalin — siapa pun yang buka akan melihat isi roda ini'); }
+    try { await navigator.clipboard.writeText(url); toast('Link disalin — yang membuka akan melihat daftar hadiah ini'); }
     catch(e){ prompt('Salin link ini:', url); }
   };
   $('spinBtn').onclick = spin;
   $('btnClose').onclick = () => closeModal(false);
   $('btnRemoveWin').onclick = () => closeModal(true);
-  $('btnPanel').onclick = () => { $('app').classList.toggle('presentasi'); };
+  $('btnSettings').onclick = () => openDrawer(!$('drawer').classList.contains('open'));
+  $('btnCloseDrawer').onclick = () => openDrawer(false);
+  $('scrim').onclick = () => openDrawer(false);
   $('btnFull').onclick = () => {
     if (!document.fullscreenElement) document.documentElement.requestFullscreen?.(); else document.exitFullscreen?.();
   };
   document.addEventListener('keydown', e => {
     const typing = /INPUT|TEXTAREA/.test(document.activeElement.tagName);
     if ($('modal').classList.contains('show') && (e.key==='Enter'||e.key==='Escape'||e.key===' ')){ e.preventDefault(); closeModal(false); return; }
+    if (e.key==='Escape' && $('drawer').classList.contains('open')){ openDrawer(false); return; }
     if (typing) return;
     if (e.key===' '||e.key==='Enter'){ e.preventDefault(); spin(); }
   });
