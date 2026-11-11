@@ -139,7 +139,7 @@ body::before{
 .modal{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;background:rgba(20,2,6,.72);backdrop-filter:blur(4px);padding:16px}
 .modal.show{display:flex}
 .card{
-  position:relative;width:min(62vw,880px);text-align:center;border-radius:3vh;padding:4vh 4vh 3vh;
+  position:relative;width:min(70vw,1000px);max-height:94vh;overflow:auto;text-align:center;border-radius:3vh;padding:3vh 4vh 2.6vh;
   background:linear-gradient(180deg,#fffaf0,#f6e8cc);color:var(--ink);
   box-shadow:0 0 0 .5vh var(--gold),0 0 0 1.2vh var(--maroon),0 4vh 10vh rgba(0,0,0,.6);
   animation:pop .5s cubic-bezier(.2,1.4,.4,1);
@@ -148,11 +148,28 @@ body::before{
 .card .arab{font-family:Amiri,serif;font-size:min(5vh,3vw);color:var(--maroon);line-height:1.6}
 .card .lbl{font-size:min(2.4vh,1.4vw);letter-spacing:.35em;text-transform:uppercase;color:#8a6a70;font-weight:600}
 .card .name{
-  font-size:min(9vh,5vw);font-weight:800;color:var(--maroon);margin:1.4vh 0 .6vh;line-height:1.1;overflow-wrap:anywhere;
+  font-size:min(7.4vh,4.2vw);font-weight:800;color:var(--maroon);margin:1.2vh 0 .4vh;line-height:1.1;overflow-wrap:anywhere;
 }
 .card .row{margin-top:3vh;justify-content:center}
 .card .btn{flex:0 1 auto;padding:1.4vh 3vh;font-size:min(2.2vh,1.3vw)}
-.card img{height:5vh;margin-top:2.4vh}
+.card > img:last-child{height:5vh;margin-top:2.4vh}
+.card .prize-img{
+  display:block;width:min(24vh,14vw);aspect-ratio:1;object-fit:cover;margin:1.6vh auto .4vh;border-radius:2.4vh;background:#fff;
+  box-shadow:0 0 0 .5vh var(--gold),0 1.2vh 3vh rgba(78,5,18,.35);
+}
+.card .prize-img[hidden]{display:none}
+.history li .th{flex:none;width:4.4vh;height:4.4vh;border-radius:1vh;object-fit:cover;background:#fff;box-shadow:0 0 0 2px var(--gold)}
+.imglist{display:flex;flex-direction:column;gap:6px}
+.imgrow{display:flex;align-items:center;gap:10px;background:#fff;border:1.5px solid #eadbc2;border-radius:12px;padding:6px 8px}
+.imgrow .pick{
+  width:52px;height:52px;flex:none;border-radius:10px;border:1.5px dashed #d2b98c;background:#fbf3e3 center/cover no-repeat;
+  cursor:pointer;color:#b08a4a;font-size:24px;line-height:1;display:grid;place-items:center;font-family:inherit;
+}
+.imgrow .pick.has{border:2px solid var(--gold);color:transparent}
+.imgrow .pick:hover{border-color:var(--maroon)}
+.imgrow span{flex:1;min-width:0;font-size:13px;font-weight:600;overflow-wrap:anywhere}
+.imgrow .del{flex:none;border:none;background:none;color:#a0646e;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;padding:4px 6px;border-radius:6px}
+.imgrow .del:hover{background:#fbeee8}
 #confetti{position:fixed;inset:0;pointer-events:none;z-index:55}
 
 /* portrait / phone fallback */
@@ -224,6 +241,12 @@ body::before{
     <textarea id="inItems" spellcheck="false"></textarea>
     <p class="note">Hadiah yang lebih sering ingin muncul? Tulis dua kali atau lebih. Contoh “Coba Lagi” ditulis 2 baris = 2 bagian di roda.</p>
   </div>
+  <div>
+    <label>Gambar hadiah (opsional)</label>
+    <div class="imglist" id="imgList"></div>
+    <p class="note">Klik kotak gambar untuk memilih foto hadiah. Foto otomatis dikecilkan dan disimpan di perangkat ini.</p>
+    <input type="file" id="filePick" accept="image/*" hidden>
+  </div>
   <div class="row">
     <button class="btn" id="btnShuffle">Acak urutan</button>
     <button class="btn" id="btnReset">Kosongkan</button>
@@ -240,6 +263,7 @@ body::before{
   <div class="card">
     <div class="arab">بَارَكَ ٱللَّٰهُ</div>
     <div class="lbl">Selamat! Anda mendapatkan</div>
+    <img class="prize-img" id="winImg" alt="" hidden>
     <div class="name" id="winName">—</div>
     <div class="row">
       <button class="btn" id="btnRemoveWin">Hapus hadiah ini dari roda</button>
@@ -258,7 +282,7 @@ body::before{
     title: 'Spin Hadiah Adhiya',
     sub: 'Putar rodanya, raih hadiahnya!',
     items: ['Hadiah 1','Hadiah 2','Coba Lagi','Hadiah 3','Hadiah 4','Coba Lagi','Hadiah 5','Hadiah 6'],
-    remove: false, sound: true, history: []
+    remove: false, sound: true, history: [], images: {}
   };
   const $ = id => document.getElementById(id);
   const canvas = $('wheel'), ctx = canvas.getContext('2d');
@@ -282,7 +306,8 @@ body::before{
     } catch(e) {}
     return s;
   }
-  function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e) {} }
+  function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); return true; } catch(e) { return false; } }
+  const persist = save;
 
   /* ---------- colors ---------- */
   const PALETTE = [
@@ -325,10 +350,31 @@ body::before{
         ctx.save();
         ctx.rotate(a0 + seg/2);
         ctx.fillStyle = c.fg; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
-        const lay = layoutLabel(items[i], seg, r);
+        let outer = r - 36;
+        const im = getImg(items[i]);
+        if (im){
+          // picture near the rim, upright when the slice sits under the pointer
+          let ri = r * 0.8, s = 0;
+          for (let k = 0; k < 3; k++){ s = Math.min(r * 0.2, 2 * ri * Math.sin(Math.min(seg, Math.PI) / 2) * 0.7); ri = r - 30 - s / 2; }
+          if (s >= 44){
+            ctx.save(); ctx.translate(ri, 0); ctx.rotate(Math.PI / 2);
+            const rad = s * 0.18;
+            ctx.beginPath(); ctx.roundRect(-s/2, -s/2, s, s, rad);
+            ctx.fillStyle = '#fff'; ctx.shadowColor = 'rgba(0,0,0,.35)'; ctx.shadowBlur = 12; ctx.fill(); ctx.shadowBlur = 0;
+            ctx.save(); ctx.clip();
+            const iw = im.naturalWidth, ih = im.naturalHeight, k2 = Math.max(s / iw, s / ih);
+            ctx.drawImage(im, -iw * k2 / 2, -ih * k2 / 2, iw * k2, ih * k2);
+            ctx.restore();
+            ctx.lineWidth = 4; ctx.strokeStyle = '#d4a84b'; ctx.stroke();
+            ctx.restore();
+            ctx.fillStyle = c.fg;
+            outer = ri - s / 2 - 10;
+          }
+        }
+        const lay = layoutLabel(items[i], seg, r, outer);
         ctx.font = `700 ${lay.fs}px Poppins`;
         const lh = lay.fs * 1.12, y0 = -(lay.lines.length - 1) * lh / 2;
-        lay.lines.forEach((ln, k) => ctx.fillText(ln, r - 36, y0 + k*lh));
+        lay.lines.forEach((ln, k) => ctx.fillText(ln, outer, y0 + k*lh));
         ctx.restore();
       }
       ctx.rotate(-angle);
@@ -361,10 +407,10 @@ body::before{
     rec(0, n, []);
     return out;
   }
-  function layoutLabel(text, seg, r){
-    const key = text + '|' + seg.toFixed(5);
+  function layoutLabel(text, seg, r, outer){
+    const key = text + '|' + seg.toFixed(5) + '|' + Math.round(outer);
     if (layoutCache.has(key)) return layoutCache.get(key);
-    const outer = r - 36, maxW = r * 0.66, sinH = Math.sin(Math.min(seg, Math.PI) / 2);
+    const maxW = Math.max(outer - r * 0.25, r * 0.2), sinH = Math.sin(Math.min(seg, Math.PI) / 2);
     const words = text.split(/\s+/).filter(Boolean);
     let best = null;
     for (let n = 1; n <= Math.min(2, words.length); n++){
@@ -453,6 +499,8 @@ body::before{
     lastWinnerIdx = i;
     const name = state.items[i];
     $('winName').textContent = name;
+    const src = state.images[name];
+    if (src){ $('winImg').src = src; $('winImg').hidden = false; } else { $('winImg').hidden = true; $('winImg').removeAttribute('src'); }
     state.history.unshift({name, at: Date.now()});
     save(); renderHistory();
     $('btnRemoveWin').style.display = state.remove ? 'none' : '';
@@ -493,8 +541,65 @@ body::before{
     $('inTitle').value = state.title; $('inSub').value = state.sub;
     $('inItems').value = state.items.join('\n');
     $('optRemove').checked = state.remove; $('optSound').checked = state.sound;
-    renderHeader(); renderCount();
+    renderHeader(); renderCount(); renderImgList();
   }
+
+  /* ---------- prize pictures (stored per prize name) ---------- */
+  const imgCache = new Map();
+  function getImg(name){
+    const src = state.images[name];
+    if (!src) return null;
+    let im = imgCache.get(src);
+    if (!im){ im = new Image(); im.onload = () => { if (!spinning) draw(); }; im.src = src; imgCache.set(src, im); }
+    return im.complete && im.naturalWidth ? im : null;
+  }
+  let pickFor = null;
+  function renderImgList(){
+    const box = $('imgList'); box.innerHTML = '';
+    const names = [...new Set(state.items)];
+    if (!names.length){ box.innerHTML = '<p class="note">Isi daftar hadiah dulu.</p>'; return; }
+    names.forEach(name => {
+      const row = document.createElement('div'); row.className = 'imgrow';
+      const b = document.createElement('button'); b.className = 'pick'; b.type = 'button'; b.title = 'Pilih gambar';
+      const src = state.images[name];
+      if (src){ b.classList.add('has'); b.style.backgroundImage = `url("${src}")`; b.textContent = '+'; } else b.textContent = '+';
+      b.onclick = () => { pickFor = name; $('filePick').value = ''; $('filePick').click(); };
+      const sp = document.createElement('span'); sp.textContent = name;
+      row.append(b, sp);
+      if (src){
+        const d = document.createElement('button'); d.className = 'del'; d.type = 'button'; d.textContent = 'Hapus gambar';
+        d.onclick = () => { delete state.images[name]; persist(); renderImgList(); renderHistory(); draw(); };
+        row.append(d);
+      }
+      box.append(row);
+    });
+  }
+  function shrinkImage(file){
+    return new Promise((res, rej) => {
+      const url = URL.createObjectURL(file), im = new Image();
+      im.onload = () => {
+        const S = 320, c = document.createElement('canvas'); c.width = c.height = S;
+        const g = c.getContext('2d'), k = Math.max(S / im.width, S / im.height);
+        g.fillStyle = '#fff'; g.fillRect(0, 0, S, S);
+        g.drawImage(im, (S - im.width * k) / 2, (S - im.height * k) / 2, im.width * k, im.height * k);
+        URL.revokeObjectURL(url);
+        let out = c.toDataURL('image/webp', 0.85);
+        if (!out.startsWith('data:image/webp')) out = c.toDataURL('image/jpeg', 0.85);
+        res(out);
+      };
+      im.onerror = () => { URL.revokeObjectURL(url); rej(); };
+      im.src = url;
+    });
+  }
+  $('filePick').addEventListener('change', async e => {
+    const f = e.target.files[0]; if (!f || pickFor == null) return;
+    try {
+      state.images[pickFor] = await shrinkImage(f);
+      if (!persist()) toast('Gambar tampil, tapi tidak tersimpan permanen (penyimpanan browser penuh/terkunci)');
+      renderImgList(); renderHistory(); draw();
+    } catch(err){ toast('Gambar tidak bisa dibaca, coba file lain (JPG/PNG)'); }
+  });
+  let imgListT;
   function renderHeader(){
     $('titleText').textContent = state.title || ' ';
     $('subText').textContent = state.sub || '';
@@ -510,7 +615,9 @@ body::before{
       const no = document.createElement('span'); no.className='no'; no.textContent = total - k;
       const s = document.createElement('span'); s.className='nm'; s.textContent = h.name;
       const t = document.createElement('time'); t.textContent = new Date(h.at).toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
-      li.append(no,s,t); ol.append(li);
+      li.append(no);
+      if (state.images[h.name]){ const th = document.createElement('img'); th.className='th'; th.alt=''; th.src = state.images[h.name]; li.append(th); }
+      li.append(s,t); ol.append(li);
     });
     $('histEmpty').style.display = total ? 'none' : '';
   }
@@ -522,6 +629,7 @@ body::before{
     if (spinning) return;
     state.items = e.target.value.split('\n').map(s=>s.trim()).filter(Boolean);
     renderCount(); save(); draw();
+    clearTimeout(imgListT); imgListT = setTimeout(renderImgList, 400);
   });
   $('optRemove').addEventListener('change', e => { state.remove = e.target.checked; save(); });
   $('optSound').addEventListener('change', e => { state.sound = e.target.checked; save(); });
