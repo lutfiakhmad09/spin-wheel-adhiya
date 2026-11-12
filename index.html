@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Spin Hadiah Adhiya</title>
+<title>Spin Berkah Adhiya</title>
 <meta name="description" content="Spin wheel hadiah event Adhiya — Jagonya Umroh Plus">
 <link rel="icon" href="logo-adhiya.png">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Amiri:wght@700&display=swap" rel="stylesheet">
@@ -206,7 +206,7 @@ body::before{
   <section class="side">
     <div class="brand"><img src="logo-adhiya.png" alt="Adhiya — Jagonya Umroh Plus"></div>
     <div>
-      <h1 class="title" id="titleText">Spin Hadiah</h1>
+      <h1 class="title" id="titleText">Spin Berkah Adhiya</h1>
       <p class="subtitle" id="subText"></p>
     </div>
     <div class="board">
@@ -327,7 +327,11 @@ body::before{
       const r = await fetch('config.json?t=' + Date.now(), {cache: 'no-store'});
       if (!r.ok) return;
       base = await r.json();
+      // a newer version published on GitHub always wins over this device's own edits
+      const ver = String(base.version || '');
+      if (ver && state.baseVersion !== ver){ state.custom = false; state.baseVersion = ver; }
       if (!state.custom) applyBase();
+      save();
       syncInputs(); renderHistory(); draw();
     } catch(e) {}
   }
@@ -625,7 +629,7 @@ body::before{
     $('titleText').textContent = state.title || ' ';
     $('subText').textContent = state.sub || '';
     $('subText').style.display = state.sub ? '' : 'none';
-    document.title = state.title || 'Spin Hadiah Adhiya';
+    document.title = state.title || 'Spin Berkah Adhiya';
   }
   function renderCount(){ $('count').textContent = `(${state.items.length} bagian)`; }
   function renderHistory(){
