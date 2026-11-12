@@ -324,7 +324,7 @@ body::before{
   }
   async function loadBase(){
     try {
-      const r = await fetch('config.json', {cache: 'no-store'});
+      const r = await fetch('config.json?t=' + Date.now(), {cache: 'no-store'});
       if (!r.ok) return;
       base = await r.json();
       if (!state.custom) applyBase();
